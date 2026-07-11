@@ -18,4 +18,4 @@ router.patch(
   providerController.updateProviderRentalOrderStatus,
 );
 
-// export const providerRouter = router;
+export const providerRouter = router;

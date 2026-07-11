@@ -12,7 +12,7 @@ const main = async () => {
     console.log("Database connected successfully.");
 
     app.listen(PORT, () => {
-      console.log(`GearUp Server is running on http://localhost:${PORT}`);
+      console.log(`GearUp  is running on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
