@@ -28,10 +28,7 @@ app.use(
 );
 
 // Stripe Webhook
-app.use(
-  "/api/payments/webhook",
-  express.raw({ type: "application/json" }),
-);
+app.use("/api/payments/webhook", express.raw({ type: "application/json" }));
 
 // Body Parser
 app.use(express.json());
@@ -41,15 +38,11 @@ app.use(cookieParser());
 // Health Check
 app.get("/", runningServer);
 
-// ================= PUBLIC ROUTES =================
-
 app.use("/api/auth", authRouter);
 
 app.use("/api/gear", gearRouter);
 
 app.use("/api/categories", categoryRouter);
-
-// ================= CUSTOMER ROUTES =================
 
 app.use("/api/rentals", rentalRouter);
 
@@ -57,19 +50,13 @@ app.use("/api/payments", paymentRouter);
 
 app.use("/api/reviews", reviewRouter);
 
-// ================= PROVIDER ROUTES =================
-
 // Provider Gear Management
 app.use("/api/provider", gearRouter);
 
 // Provider Rental Orders
 app.use("/api/provider", providerRouter);
 
-// ================= ADMIN ROUTES =================
-
 app.use("/api/admin", adminRouter);
-
-// ================= ERROR HANDLER =================
 
 app.use(notFound);
 
