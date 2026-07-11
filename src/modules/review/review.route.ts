@@ -11,5 +11,5 @@ router.post(
   reviewController.createReview,
 );
 
-// export const reviewRouter = router;
+export const reviewRouter = router;
 
