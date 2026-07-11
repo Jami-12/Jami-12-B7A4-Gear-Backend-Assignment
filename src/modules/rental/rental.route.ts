@@ -23,4 +23,4 @@ router.get(
   rentalOrderController.getRentalOrderById,
 );
 
-// export const rentalRouter = router;
+export const rentalRouter = router;
