@@ -38,4 +38,4 @@ router.delete(
   adminController.deleteUser,
 );
 
-// export const adminRouter = router;
+export const adminRouter = router;
