@@ -32,7 +32,7 @@ export const auth = (...requiredRoles: Role[]) => {
 
     if (!token) {
       throw new Error(
-        "You are not logged in. Please log in to access this resource.",
+        "You are not  in. Please log in to access this resource.",
       );
     }
 
