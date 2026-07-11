@@ -12,7 +12,7 @@ export const globalErrorHandler = (
 
   let statusCode;
   let errorMessage = err.message || "Internal Server Error";
-  let errorName = err.name || "Internal Server Error";
+  let errorName = err.name || "Internal  Error";
   // let errorDetails = err.stack
 
   if (err instanceof Prisma.PrismaClientValidationError) {
