@@ -35,7 +35,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Health Check
 app.get("/", runningServer);
 
 app.use("/api/auth", authRouter);
@@ -50,10 +49,8 @@ app.use("/api/payments", paymentRouter);
 
 app.use("/api/reviews", reviewRouter);
 
-// Provider Gear Management
 app.use("/api/provider", gearRouter);
 
-// Provider Rental Orders
 app.use("/api/provider", providerRouter);
 
 app.use("/api/admin", adminRouter);
