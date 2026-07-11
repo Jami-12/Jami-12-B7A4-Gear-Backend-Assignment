@@ -1,0 +1,77 @@
+{
+  "info": {
+    "_postman_id": "b7a4-gearup-backend-api",
+    "name": "GearUp Backend API",
+    "description": "Postman collection generated from the current backend routes. Set role-specific tokens in the GearUp Local environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseURL", "value": "http://localhost:5000/api" }
+  ],
+  "item": [
+    {
+      "name": "01 Authentication",
+      "item": [
+        { "name": "Register Customer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Customer User\",\n  \"email\": \"customer@example.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"01700000000\",\n  \"role\": \"CUSTOMER\"\n}" }, "url": "{{baseURL}}/auth/register" } },
+        { "name": "Register Provider", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Provider User\",\n  \"email\": \"provider@example.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"01800000000\",\n  \"role\": \"PROVIDER\"\n}" }, "url": "{{baseURL}}/auth/register" } },
+        { "name": "Login", "event": [{ "listen": "test", "script": { "exec": ["const data = pm.response.json().data;", "if (data && data.accessToken) { pm.environment.set('token', data.accessToken); }", "if (data && data.accessToken && data.userData.role === 'CUSTOMER') { pm.environment.set('customerToken', data.accessToken); }", "if (data && data.accessToken && data.userData.role === 'PROVIDER') { pm.environment.set('providerToken', data.accessToken); }", "if (data && data.accessToken && data.userData.role === 'ADMIN') { pm.environment.set('adminToken', data.accessToken); }"] } }], "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"Password123!\"\n}" }, "url": "{{baseURL}}/auth/login" } },
+        { "name": "Get Me", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseURL}}/auth/me" } },
+        { "name": "Update My Profile", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"01700000001\"\n}" }, "url": "{{baseURL}}/auth/me" } }
+      ]
+    },
+    {
+      "name": "02 Categories",
+      "item": [
+        { "name": "Get All Categories", "request": { "method": "GET", "url": "{{baseURL}}/categories" } },
+        { "name": "Create Category (Admin)", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Camping\",\n  \"description\": \"Camping equipment\"\n}" }, "url": "{{baseURL}}/categories" } }
+      ]
+    },
+    {
+      "name": "03 Gear",
+      "item": [
+        { "name": "Get All Gear", "request": { "method": "GET", "url": "{{baseURL}}/gear?searchTerm=&categoryId={{categoryId}}&page=1&limit=10" } },
+        { "name": "Get Gear Details", "request": { "method": "GET", "url": "{{baseURL}}/gear/{{gearId}}" } }
+      ]
+    },
+    {
+      "name": "04 Rental Orders",
+      "item": [
+        { "name": "Create Rental Order", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"gearItemId\": \"{{gearId}}\",\n  \"startDate\": \"2026-07-15\",\n  \"endDate\": \"2026-07-18\"\n}" }, "url": "{{baseURL}}/rentals" } },
+        { "name": "Get My Rental Orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }], "url": "{{baseURL}}/rentals" } },
+        { "name": "Get Rental Details", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }], "url": "{{baseURL}}/rentals/{{rentalId}}" } }
+      ]
+    },
+    {
+      "name": "05 Payments",
+      "item": [
+        { "name": "Create Stripe Checkout Session", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rentalOrderId\": \"{{rentalId}}\"\n}" }, "url": "{{baseURL}}/payments/create" } }
+      ]
+    },
+    {
+      "name": "06 Provider",
+      "item": [
+        { "name": "Add Gear", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{providerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"name\": \"2-Person Tent\",\n  \"description\": \"Weather-resistant tent\",\n  \"brand\": \"NatureHike\",\n  \"dailyRate\": 500,\n  \"stock\": 5,\n  \"availableStock\": 5,\n  \"condition\": \"Excellent\",\n  \"categoryId\": \"{{categoryId}}\"\n}" }, "url": "{{baseURL}}/provider" } },
+        { "name": "Update Gear", "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{providerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"dailyRate\": 550,\n  \"stock\": 6,\n  \"availableStock\": 6\n}" }, "url": "{{baseURL}}/provider/{{gearId}}" } },
+        { "name": "Delete Gear", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{providerToken}}" }], "url": "{{baseURL}}/provider/{{gearId}}" } },
+        { "name": "Get Provider Orders", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{providerToken}}" }], "url": "{{baseURL}}/provider/orders" } },
+        { "name": "Update Rental Status", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{providerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rentalStatus\": \"CONFIRMED\"\n}" }, "url": "{{baseURL}}/provider/orders/{{rentalId}}" } }
+      ]
+    },
+    {
+      "name": "07 Reviews",
+      "item": [
+        { "name": "Create Review", "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"gearItemId\": \"{{gearId}}\",\n  \"rating\": 5,\n  \"comment\": \"Excellent gear and service.\"\n}" }, "url": "{{baseURL}}/reviews" } }
+      ]
+    },
+    {
+      "name": "08 Admin",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseURL}}/admin/users" } },
+        { "name": "Update User Status", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"activeStatus\": \"SUSPENDED\"\n}" }, "url": "{{baseURL}}/admin/users/{{userId}}" } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseURL}}/admin/users/{{userId}}" } },
+        { "name": "Get All Gear", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseURL}}/admin/gear" } },
+        { "name": "Get All Rentals", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }], "url": "{{baseURL}}/admin/rentals" } }
+      ]
+    }
+  ]
+}
